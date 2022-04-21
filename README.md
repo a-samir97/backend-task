@@ -1,24 +1,16 @@
-# README
+# Chat system Backend Task 
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Technologies Used:
+  - Ruby on rails 
+  - MySQL Database
+  - ElasticSearch
+  - Docker 
+  - Redis (Not Completed)
+  - Sidekiq (Not Completed)
+ 
+### How to run this project ? 
+  - docker-compose up ( this command will awake up all containers)
 
-Things you may want to cover:
+### Roadmap about tasks done 
+![alt text](https://github.com/a-samir97/backend-task/blob/master/docs/tasks_done.png)
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
