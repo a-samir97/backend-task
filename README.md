@@ -5,8 +5,8 @@
   - MySQL Database
   - ElasticSearch
   - Docker 
-  - Redis (Not Completed)
-  - Sidekiq (Not Completed)
+  - Redis (AFTER DEADLINE)
+  - Sidekiq (AFTER DEADLINE)
  
 ### How to run this project ? 
   - docker-compose up ( this command will awake up all containers)
