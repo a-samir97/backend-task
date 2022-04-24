@@ -13,10 +13,9 @@ class ChatsController < ApplicationController
     end
 
     def create
-        @chat = @application.chats.new(chat_params)
-        @chat.number = @chat_number
-        @chat.save!
-        render json: @chat.as_json(only: [:number, :name])
+        # add chat data to queue
+        ChatWorker::perform_async(@application.token, @chat_number, chat_params[:name])
+        render json: {data: 'Chat is created sucessfully.'}, status: 200
     end
 
     def update

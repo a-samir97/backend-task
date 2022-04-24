@@ -14,10 +14,9 @@ class MessagesController < ApplicationController
     end
 
     def create
-        @message = @chat.messages.new(message_params)
-        @message.number = @mesage_number
-        @message.save!
-        render json: @message, status: 200
+        # add mesage data to queue system
+        MessageWorker.perform_async(@chat.number, params[:application_token], @message_number, message_params[:content])
+        render json: {data: 'Message is created successfully.'}, status: 200
     end
 
 
@@ -68,9 +67,9 @@ class MessagesController < ApplicationController
 
     def message_number
         if @chat.messages.maximum("number")
-            @mesage_number = @chat.messages.maximum("number") + 1
+            @message_number = @chat.messages.maximum("number") + 1
         else
-            @mesage_number = 1
+            @message_number = 1
         end
     end
 end

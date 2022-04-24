@@ -2,7 +2,7 @@ version: "3.9"
 services:
   app:
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && bundle exec rails s -p 3000 -b '0.0.0.0'"
+    command: bash -c "rm -f tmp/pids/server.pid && rails db:migrate && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/app
     ports:
@@ -35,6 +35,7 @@ services:
       - "3307:3306"
     volumes:
       - db:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   redis:
     image: redis:6.2-alpine
@@ -47,7 +48,6 @@ services:
   sidekiq:
     depends_on:
       - redis
-    links:
       - db
     build: .
     command: bundle exec sidekiq
@@ -56,6 +56,10 @@ services:
     environment:
       REDIS_URL: redis://redis:6379
       RAILS_ENV: development
+      DB_USER: root
+      DB_NAME: chat_system
+      DB_PASSWORD: password
+      DB_HOST: db
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
