@@ -79,7 +79,7 @@
   
   - `GET` Get messages count for specific chat 
     - `endpoint`
-      - `/applications/<application_token>/chats/<chat_number>/messages_count/   
+      - `/applications/<application_token>/chats/<chat_number>/messages_count/`   
 ---     
 
 
