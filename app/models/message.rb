@@ -1,5 +1,4 @@
 class Message < ApplicationRecord
-    belongs_to :chats, optional: true
     include Searchable
-    
+    belongs_to :chat, optional: true, counter_cache: true
 end

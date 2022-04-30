@@ -16,7 +16,7 @@ class MessagesController < ApplicationController
     def create
         # add mesage data to queue system
         MessageWorker.perform_async(@chat.number, params[:application_token], @message_number, message_params[:content])
-        render json: {data: 'Message is created successfully.'}, status: 200
+        render json: {data: 'Message is created successfully.'}, status: :ok
     end
 
 
@@ -29,12 +29,8 @@ class MessagesController < ApplicationController
     end
 
     def destroy
-        if @message
-            @message.destroy
-            render status: :no_content
-        else
-            render json: {error: 'Not Found'}, status: :not_found
-        end
+        @message.destroy
+        render json: { message: 'Message is deleted successfully.'}, status: :no_content
     end
 
     # Using ElasticSearch
@@ -66,10 +62,6 @@ class MessagesController < ApplicationController
     end
 
     def message_number
-        if @chat.messages.maximum("number")
-            @message_number = @chat.messages.maximum("number") + 1
-        else
-            @message_number = 1
-        end
+        @message_number = @chat.messages.maximum("number") ? @chat.messages.maximum("number") + 1 : 1
     end
 end

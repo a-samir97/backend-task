@@ -1,15 +1,17 @@
 version: "3.9"
 services:
   app:
+    container_name: ruby_app
     build: .
-    command: bash -c "rm -f tmp/pids/server.pid && rails db:migrate && bundle exec rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/app
     ports:
       - "3000:3000"
     depends_on:
-      - db
-      - elasticsearch
+      db: 
+        condition: service_healthy
+      elasticsearch: 
+        condition: service_healthy
     links:
       - db
       - redis 
@@ -23,6 +25,7 @@ services:
       REDIS_URL: redis://redis:6379
 
   db:
+    container_name: db
     platform: linux/x86_64
     image: mysql:5.7
     restart: always
@@ -35,20 +38,33 @@ services:
       - "3307:3306"
     volumes:
       - db:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      interval: 5s
+      timeout: 10s
+      retries: 10
 
   redis:
+    container_name: redis
     image: redis:6.2-alpine
     ports:
       - 6379:6379
     command: redis-server
     volumes:
       - redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 1s
+      timeout: 3s
+      retries: 20
   
   sidekiq:
+    container_name: sidekiq
     depends_on:
-      - redis
-      - db
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
     build: .
     command: bundle exec sidekiq
     volumes:
@@ -60,9 +76,11 @@ services:
       DB_NAME: chat_system
       DB_PASSWORD: password
       DB_HOST: db
+      ELASTICSEARCH_URL: elasticsearch
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:7.11.0
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
     environment:
       - cluster.name=docker-cluster
       - bootstrap.memory_lock=true
@@ -81,6 +99,12 @@ services:
       - ./docker_data/elasticsearch/data:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    healthcheck:
+      test: curl -u elastic:elastic -s -f elasticsearch:9200/_cat/health >/dev/null || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 
 volumes:
   db:

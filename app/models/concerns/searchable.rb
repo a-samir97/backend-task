@@ -4,7 +4,7 @@ module Searchable
     included do
         include Elasticsearch::Model
         include Elasticsearch::Model::Callbacks
-   
+
         settings do
             mappings dynamic: false do
               indexes :content, type: :text

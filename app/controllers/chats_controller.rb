@@ -1,6 +1,6 @@
 class ChatsController < ApplicationController
     before_action :get_application
-    before_action :find_chat, only: [:show, :update, :destroy]
+    before_action :find_chat, only: [:show, :update, :destroy, :count]
     before_action :chat_number, only: [:create]
 
     def index
@@ -15,7 +15,7 @@ class ChatsController < ApplicationController
     def create
         # add chat data to queue
         ChatWorker::perform_async(@application.token, @chat_number, chat_params[:name])
-        render json: {data: 'Chat is created sucessfully.'}, status: 200
+        render json: {data: 'Chat is created sucessfully.'}, status: :ok
     end
 
     def update
@@ -27,12 +27,12 @@ class ChatsController < ApplicationController
     end
 
     def destroy
-        if @chat
-            @chat.destroy
-            render status: :no_content
-        else
-            render json: {error: 'Not Found'}, status: :not_found
-        end
+        @chat.destroy
+        render json: { message: 'Chat is deleted successfully.'}, status: :no_content
+    end
+
+    def count
+        render json: {count: @chat.messages.size}, status: 200
     end
 
     private 
@@ -42,18 +42,15 @@ class ChatsController < ApplicationController
     end
 
     def find_chat
-        @chat = @application.chats.find_by_number!(params[:number])
+        number = params[:number] ? params[:number] : params[:chat_number]
+        @chat = @application.chats.find_by_number!(number)
     end
 
     def get_application
         @application = Application.find_by_token!(params[:application_token])
     end
 
-    def chat_number 
-        if @application.chats.maximum('number')
-            @chat_number = @application.chats.maximum('number') + 1
-        else
-            @chat_number = 1
-        end
+    def chat_number
+        @chat_number = @application.chats.maximum('number') ? @application.chats.maximum('number') + 1 : 1
     end
 end

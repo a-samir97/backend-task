@@ -4,7 +4,7 @@ class CreateChats < ActiveRecord::Migration[5.0]
       t.string :name
       t.integer :number, :unique => true
       t.string :application_id, :null => false
-
+      t.integer :messages_count, :default => 0
       t.timestamps
     end
     add_foreign_key :chats, :applications, column: :application_id, primary_key: "token", on_delete: :cascade
