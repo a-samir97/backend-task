@@ -22,7 +22,7 @@ class MessagesController < ApplicationController
 
     def update
         if @message.update(message_params)
-            render json: @message
+            render json: @message.as_json(only: [:number, :content])
         else
             render json: @message.error, status: :unprocessable_entity
         end

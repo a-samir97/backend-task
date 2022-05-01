@@ -20,7 +20,7 @@ class ChatsController < ApplicationController
 
     def update
         if @chat.update(chat_params)
-            render json: @chat
+            render json: @chat.as_json(only: [:number, :name])
         else
             render json: @chat.error, status: :unprocessable_entity
         end
