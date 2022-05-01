@@ -124,11 +124,12 @@
   docker-compose up
   docker-compose run app rspec
   ```
-![alt text](https://github.com/a-samir97/backend-task/blob/master/docs/Rspec.png)
+![Rspec](https://github.com/a-samir97/backend-task/blob/master/docs/Rspec.png)
 ---
 ### Roadmap about tasks done 
-![alt text](https://github.com/a-samir97/backend-task/blob/master/docs/tasks_done.png)
+![Roadmap tasks](https://github.com/a-samir97/backend-task/blob/master/docs/tasks_done.png)
 
 ---
 ### Insomnia File 
 > [Insomnia File](https://github.com/a-samir97/backend-task/blob/master/docs/API_Insomnia.json)
+![insomnia_file](https://github.com/a-samir97/backend-task/blob/master/docs/insomnia.png)
